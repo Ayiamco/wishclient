@@ -1,0 +1,4 @@
+1. User enters wish
+2. User can check if they want their wish made public or not
+3. Users can view their wish and other public wishes
+4. Users can view details of a particular wish
