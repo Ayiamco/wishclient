@@ -1,15 +1,21 @@
 import logo from "./logo.svg";
 import "./App.css";
-import NavBar from "./components/navBar/navBar";
+import { useState } from "react";
+import WishDashboard from "./pages/wishDashboard/WishDashboard";
+import LoginPage from "./pages/login/login";
 
 function App() {
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
   return (
-    <div className="mainContainer">
-      <div className="homePageContainer">
-        <div className="homePageInnerCon">
-          <NavBar />
-        </div>
-      </div>
+    <div>
+      {isWalletConnected ? (
+        <WishDashboard />
+      ) : (
+        <LoginPage
+          isWalletConnected={isWalletConnected}
+          setIsWalletConnected={setIsWalletConnected}
+        />
+      )}
     </div>
   );
 }
