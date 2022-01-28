@@ -1,5 +1,5 @@
 import "./wishDashboard.css";
-import NavBar from "../../components/navBar/navBar";
+import NavBar from "../../components/navBar/navBar.js";
 
 function WishDashboard() {
   return (

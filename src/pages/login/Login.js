@@ -1,4 +1,4 @@
-import Button from "../../components/button/button";
+import Button from "../../components/button/button.js";
 import "./login.css";
 import React, { useEffect, useState } from "react";
 //import ReactGA from "react-ga";
