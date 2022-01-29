@@ -1,4 +1,4 @@
-import logo from "./logo.svg";
+//import logo from "./logo.svg";
 import "./App.css";
 import { useState } from "react";
 import WishDashboard from "./pages/wishDashboard/WishDashboard.js";
@@ -9,7 +9,7 @@ function App() {
   return (
     <div>
       {isWalletConnected ? (
-        <WishDashboard />
+        <WishDashboard setIsWalletConnected={setIsWalletConnected} />
       ) : (
         <LoginPage
           isWalletConnected={isWalletConnected}
