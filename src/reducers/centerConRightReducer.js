@@ -11,4 +11,11 @@ export default function reducer(state, action) {
     let newState = { ...state, expand: action.payload };
     return newState;
   }
+
+  if (action.type === "SET_ALL_WISHES") {
+    console.log("before:", state);
+    let newState = { ...state, allWishes: action.payload.wishes };
+    console.log("newState:", newState);
+    return newState;
+  }
 }

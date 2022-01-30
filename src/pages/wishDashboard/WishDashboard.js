@@ -15,7 +15,7 @@ const defaultState = {
   loading: false,
   chatMode: false,
   showLeft: false,
-  showRight: false,
+  showRight: true,
   modalDisplay: "none",
   expand: {
     address: "",
@@ -32,61 +32,25 @@ const defaultState = {
 };
 function WishDashboard({ setIsWalletConnected }) {
   const [state, dispatch] = useReducer(reducer, defaultState);
+  console.log("initial state:", state);
 
-  const getAllWishes = useCallback(async () => {
-    console.log("getting all wishes....");
-    try {
-      const { ethereum } = window;
-      console.log("1");
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        console.log("2");
-        const signer = provider.getSigner();
-        console.log("3");
-        const wishPortalContract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer
-        );
-        console.log("4");
+  const getWishContract = async (ethereum) => {
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const wishPortalContract = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      signer
+    );
+    return wishPortalContract;
+  };
 
-        console.log("wishportal contract:", wishPortalContract);
-        const wishes = await wishPortalContract.getPublicWishes();
-        console.log("wishes gotten from blockchain: ", wishes);
-
-        let wishesArray = [];
-
-        wishes.forEach((wish) => {
-          console.log(wish);
-          wishesArray.push({
-            address: wish.waiver,
-            timestamp: new Date(wish.timeStamp * 1000),
-            message: wish.message,
-          });
-        });
-
-        dispatch({
-          type: "SET_ALL_WISHES",
-          payload: { wishes: wishesArray.reverse() },
-        });
-
-        // wishPortalContract.on("NewWave", (from, timestamp, message) => {
-        //   console.log("New Wave ", from, timestamp, message);
-
-        //   setAllWaves((prevState) => [
-        //     ...prevState,
-        //     {
-        //       address: from,
-        //       timestamp: new Date(timestamp * 1000),
-        //       message: message,
-        //     },
-        //   ]);
-        // });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [contractABI]);
+  const sendWish = async (_isPrivate, wish) => {
+    const wishPortalContract = await getWishContract(window.ethereum);
+    console.log("kjk:", wishPortalContract);
+    let txn = await wishPortalContract.makeWish(wish, _isPrivate);
+    await txn.wait();
+  };
 
   const fetchUserName = () => {
     let newUsername = JSON.parse(localStorage.getItem("userName"));
@@ -97,8 +61,7 @@ function WishDashboard({ setIsWalletConnected }) {
 
   useEffect(() => {
     fetchUserName();
-    getAllWishes();
-  }, [getAllWishes]);
+  }, []);
 
   return (
     <div className="mainContainer">
@@ -106,14 +69,14 @@ function WishDashboard({ setIsWalletConnected }) {
         <div className="homePageInnerCon">
           <NavBar />
           <div className="centerCon">
-            {/* <div className="centerConLeft">
+            <div className="centerConLeft">
               <div className="greeting">
                 <div className="description">
                   <h1 className="walletAddress">
                     Hi{" "}
                     <span className="shortenedAddress">
-                      {username && username.firstSix}...
-                      {username && username.lastFour}
+                      {state.username && state.username.firstSix}...
+                      {state.username && state.username.lastFour}
                     </span>{" "}
                     ,
                   </h1>
@@ -127,35 +90,36 @@ function WishDashboard({ setIsWalletConnected }) {
               <div
                 className="unreadMessage"
                 onClick={() => {
-                  console.log("clicked", chatMode);
-                  setChatMode(true);
+                  // console.log("clicked", chatMode);
+                  // setChatMode(true);
                 }}
               >
                 Unread Messages
               </div>
-              <form className="form" onSubmit={wave}>
-                <input
-                  type="text"
-                  placeholder="Type a message..."
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                  }}
-                />
-                {loading ? (
-                  <span className="sendButton">
-                    <img src={spinner} alt="spinner" />
-                  </span>
-                ) : (
-                  <button className="sendButton" onClick={wave}>
-                    <span role="img" aria-label="wave-emoji">
-                      👋
+              {/* <form className="form" onSubmit={wave}>
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                    }}
+                  />
+                  {loading ? (
+                    <span className="sendButton">
+                      <img src={spinner} alt="spinner" />
                     </span>
-                  </button>
-                )}
-              </form>
-            </div> */}
-            <CenterConRight _state={state} />
+                  ) : (
+                    <button className="sendButton" onClick={wave}>
+                      <span role="img" aria-label="wave-emoji">
+                        👋
+                      </span>
+                    </button>
+                  )}
+                </form> */}
+            </div>
+
+            <CenterConRight _state={state} getWishContract={getWishContract} />
           </div>
         </div>
       </div>
