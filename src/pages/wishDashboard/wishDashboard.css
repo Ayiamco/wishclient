@@ -186,8 +186,11 @@ form {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.33);
 }
 
-form > input {
+form > div {
   width: 70%;
+}
+.form-wish {
+  width: 100%;
   padding: 15px;
   border-radius: 10px;
   margin: 20px 0;
@@ -197,8 +200,26 @@ form > input {
   /* padding-bottom: 20px; */
 }
 
-form > input:focus {
+.form-wish:focus {
   outline: none;
+}
+
+.form-check {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-check > input,
+.form-check > label {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  display: block;
+}
+label {
+  margin-left: 3px;
 }
 
 .sendButton {
@@ -394,10 +415,6 @@ form > input:focus {
   .description {
     width: 85%;
     margin: 0 0 100px 0;
-  }
-
-  .form {
-    display: none;
   }
 
   .walletAddress {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./navBar.css";
-// import github from "../../assets/github.svg";
-// import twitter from "../../assets/twitter.svg";
+import github from "../../assets/github.svg";
+import twitter from "../../assets/twitter.svg";
 
 function NavBar({ setModalDisplay }) {
   const [display, setDisplay] = useState("none");
@@ -61,20 +61,20 @@ function NavBar({ setModalDisplay }) {
             <ul className="menuList">
               <li>
                 <a
-                  href="https://www.github.com/joshuanwankwo"
+                  href="https://github.com/Ayiamco/wishclient"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Github {/*  <img src={github} alt="" /> */}
+                  Github {<img src={github} alt="" />}
                 </a>
               </li>
               <li>
                 <a
-                  href="https://www.twitter.com/judicodes"
+                  href="https://twitter.com/JosephAchonu"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Twitter {/*  <img src={twitter} alt="" /> */}
+                  Twitter {<img src={twitter} alt="" />}
                 </a>
               </li>
             </ul>

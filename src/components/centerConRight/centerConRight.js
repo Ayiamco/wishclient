@@ -11,37 +11,35 @@ export default function CenterConRight({ _state, getWishContract }) {
       const { ethereum } = window;
       if (ethereum) {
         let wishPortalContract = await getWishContract(ethereum);
-        const wishes = await wishPortalContract.getPublicWishes();
-        console.log("wishes gotten from blockchain: ", wishes);
+        let wishes = await wishPortalContract.getPublicWishes();
+        const _privateWishes = await wishPortalContract.getPrivateWishes();
+        console.log("Public wish from blockchain:", wishes);
+        console.log("Private wish from blockchain:", _privateWishes);
+        wishes = [...wishes, ..._privateWishes];
         let wishesArray = [];
         wishes.forEach((wish) => {
-          console.log(wish);
           wishesArray.push({
-            //address: wish.waiver,
+            address: wish.from,
             timestamp: new Date(wish.timeStamp * 1000),
             wish: wish.wish,
+            isPrivate: wish.isPrivate,
           });
         });
-
+        console.log("wishes gotten from blockchain: ", wishesArray);
         dispatch({
           type: "SET_ALL_WISHES",
           payload: { wishes: wishesArray.reverse() },
         });
 
-        // wishPortalContract.on("NewWave", (from, timestamp, message) => {
-        //   console.log("New Wave ", from, timestamp, message);
-
-        //   setAllWaves((prevState) => [
-        //     ...prevState,
-        //     {
-        //       address: from,
-        //       timestamp: new Date(timestamp * 1000),
-        //       message: message,
-        //     },
-        //   ]);
-        // });
+        wishPortalContract.on("NewWish", (wish, timeStamp, isPrivate, from) => {
+          dispatch({
+            type: "NEW_WISH",
+            payload: { wish, timeStamp, isPrivate, address: from },
+          });
+        });
       }
     } catch (error) {
+      console.log(error.message);
       console.log(error);
     }
   }, []);
@@ -53,7 +51,9 @@ export default function CenterConRight({ _state, getWishContract }) {
   return (
     <div
       className="centerConRight"
-      style={{ display: state.showRight ? "flex" : "none" }}
+      style={{
+        display: state.showRight ? "flex" : "none",
+      }}
     >
       <div className="messagesHeader">
         <h1
@@ -69,7 +69,7 @@ export default function CenterConRight({ _state, getWishContract }) {
           {state.expand.open ? "〈〈 " : null}
           {state.allWishes.length}
         </h1>
-        <span>Inbox</span>
+        <span>Wishes</span>
       </div>
       <div className="messagesContainer">
         {state.expand.open ? (
@@ -81,8 +81,11 @@ export default function CenterConRight({ _state, getWishContract }) {
                 </span>
               </h1>
               <h3 className="expandedMessageAddress">{state.expand.address}</h3>
-              <h3 className="expandedMessageText">"{state.expand.message}"</h3>
+              <h3 className="expandedMessageText">"{state.expand.wish}"</h3>
               <h3 className="expandedMessageTime">{state.expand.time} </h3>
+              <h3 className="expandedMessageTime">
+                {state.expand.isPrivate ? "Private wish." : "Public wish."}
+              </h3>
             </div>
           </div>
         ) : (
@@ -93,23 +96,27 @@ export default function CenterConRight({ _state, getWishContract }) {
                   className="transaction"
                   key={key}
                   onClick={() => {
-                    console.log(state.expand);
+                    console.log("wish in loop:", wish);
                     dispatch({
                       type: "SET_EXPAND",
                       payload: {
-                        state: true,
-                        message: wish.wish,
+                        open: true,
+                        wish: wish.wish,
                         time: wish.timestamp.toString(),
                         address: wish.address,
+                        isPrivate: wish.isPrivate,
                       },
                     });
+                    console.log(state.expand);
                   }}
                 >
                   <img src={DP} alt="" className="dp" />
                   <div className="info">
                     <div className="messageWrapper">
-                      <h4>{"Wish Address"}</h4>
-                      <span className="recievedMessage">{wish.message}</span>
+                      <h4>{wish.address}</h4>
+                      <span className="recievedMessage">
+                        {wish.wish.substring(0, 10)} ...
+                      </span>
                     </div>
                     <span className="expand">〉</span>
                   </div>

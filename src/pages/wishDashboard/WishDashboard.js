@@ -6,8 +6,9 @@ import reducer from "../../reducers/wishDashboardReducer";
 import wishPortal from "../../utils/wishContract.json";
 import DP from "../../assets/profile.svg";
 import { ethers } from "ethers";
+import WishForm from "../../components/wishForm/wishForm";
 
-const contractAddress = "0xD9Da6Be1E59641E347927193Be492357ccA6F877";
+const contractAddress = "0x6b1D67607dED73C0206809eD76D3E97484Efb971";
 const contractABI = wishPortal.abi;
 const defaultState = {
   allWishes: [],
@@ -19,7 +20,7 @@ const defaultState = {
   modalDisplay: "none",
   expand: {
     address: "",
-    message: "",
+    wish: "",
     time: "",
     state: false,
   },
@@ -32,7 +33,6 @@ const defaultState = {
 };
 function WishDashboard({ setIsWalletConnected }) {
   const [state, dispatch] = useReducer(reducer, defaultState);
-  console.log("initial state:", state);
 
   const getWishContract = async (ethereum) => {
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -45,19 +45,28 @@ function WishDashboard({ setIsWalletConnected }) {
     return wishPortalContract;
   };
 
-  const sendWish = async (_isPrivate, wish) => {
-    const wishPortalContract = await getWishContract(window.ethereum);
-    console.log("kjk:", wishPortalContract);
-    let txn = await wishPortalContract.makeWish(wish, _isPrivate);
-    await txn.wait();
-  };
+  const responsiveness = useCallback(() => {
+    if (window.innerWidth < 979) {
+      dispatch({ type: "CHANGE_LAYOUT", payload: true });
+    } else if (window.innerWidth > 979) {
+      dispatch({ type: "CHANGE_LAYOUT", payload: false });
+    }
+  });
+
+  //window.addEventListener("resize", responsiveness);
 
   const fetchUserName = () => {
     let newUsername = JSON.parse(localStorage.getItem("userName"));
-    console.log("username from fetchUsername:", newUsername);
     if (!newUsername) setIsWalletConnected(false);
-    else dispatch({ type: "SET_USERNAME", payload: { newUsername } });
+    else dispatch({ type: "SET_USERNAME", payload: { ...newUsername } });
   };
+
+  useEffect(() => {
+    window.addEventListener("resize", responsiveness);
+    return () => {
+      window.removeEventListener("resize", responsiveness);
+    };
+  });
 
   useEffect(() => {
     fetchUserName();
@@ -68,55 +77,31 @@ function WishDashboard({ setIsWalletConnected }) {
       <div className="homePageContainer">
         <div className="homePageInnerCon">
           <NavBar />
-          <div className="centerCon">
+          <div
+            className="centerCon"
+            style={{ flexDirection: state.columnLayout ? "column" : "row" }}
+          >
             <div className="centerConLeft">
               <div className="greeting">
                 <div className="description">
                   <h1 className="walletAddress">
                     Hi{" "}
                     <span className="shortenedAddress">
-                      {state.username && state.username.firstSix}...
-                      {state.username && state.username.lastFour}
+                      {state.username.firstSix}...
+                      {state.username.lastFour}
                     </span>{" "}
                     ,
                   </h1>
-                  How about you wave and get a cake? <br />
-                  Wave to a community of blockchain developers and enthusaists
-                  and you might get lucky and get some free eth sent to your
-                  wallet and that's it, no bank charges, no long bank que, no
-                  paper works, no government! <br />
+                  In many countries, it's believed that “if you make a wish as
+                  you toss a coin or a pebble into a well, it may come true."
+                  Let the blockchain be your well. 😊.
+                  <br></br>
+                  <br></br>
+                  <i>N/B: Private wishes would only be seen by you.</i>
+                  <br />
                 </div>
               </div>
-              <div
-                className="unreadMessage"
-                onClick={() => {
-                  // console.log("clicked", chatMode);
-                  // setChatMode(true);
-                }}
-              >
-                Unread Messages
-              </div>
-              {/* <form className="form" onSubmit={wave}>
-                  <input
-                    type="text"
-                    placeholder="Type a message..."
-                    value={message}
-                    onChange={(e) => {
-                      setMessage(e.target.value);
-                    }}
-                  />
-                  {loading ? (
-                    <span className="sendButton">
-                      <img src={spinner} alt="spinner" />
-                    </span>
-                  ) : (
-                    <button className="sendButton" onClick={wave}>
-                      <span role="img" aria-label="wave-emoji">
-                        👋
-                      </span>
-                    </button>
-                  )}
-                </form> */}
+              <WishForm getWishContract={getWishContract}></WishForm>
             </div>
 
             <CenterConRight _state={state} getWishContract={getWishContract} />
