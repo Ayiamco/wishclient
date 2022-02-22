@@ -10,13 +10,14 @@ function LoginPage({ setIsWalletConnected, isWalletConnected }) {
   });
 
   const saveWalletData = (walletAddress) => {
-    var userName = {
+    console.log("Saving WalletAddress data of wallet... ", walletAddress);
+    var userData = {
       complete: walletAddress,
       firstSix: walletAddress.substring(0, 6),
       lastFour: walletAddress.substring(walletAddress.length - 4),
       initial: walletAddress.substring(0, 1),
     };
-    localStorage.setItem("userName", JSON.stringify(userName));
+    localStorage.setItem("userName", JSON.stringify(userData));
   };
 
   const checkIfWalletIsConnected = async () => {
@@ -30,12 +31,13 @@ function LoginPage({ setIsWalletConnected, isWalletConnected }) {
       //Get User Wallet Addresses
       const accounts = await ethereum.request({ method: "eth_accounts" });
       console.log("Accounts found: ", accounts);
-      if (accounts.length !== 0) {
+      if (accounts.length > 0) {
         saveWalletData(accounts[0].toString());
         setIsWalletConnected(true);
       } else {
         setIsWalletConnected(false);
         console.log("No authorized account found");
+        alert("No authorized account found");
       }
     } catch (error) {
       console.log(error);
