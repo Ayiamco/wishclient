@@ -67,7 +67,7 @@ function LoginPage({ setIsWalletConnected, isWalletConnected }) {
         method: "eth_requestAccounts",
       });
       console.log("Connected account ", accounts[0]);
-      saveWalletData(accounts[0].toString);
+      saveWalletData(accounts[0].toString());
       setIsWalletConnected(true);
     } catch (error) {
       console.log(error);
