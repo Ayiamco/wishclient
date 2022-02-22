@@ -76,6 +76,7 @@ function LoginPage({ setIsWalletConnected, isWalletConnected }) {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [checkIfWalletIsConnected]);
+
   return (
     <div className="connectMainContainer">
       <div className="connectLeft">
