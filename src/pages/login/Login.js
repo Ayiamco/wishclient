@@ -95,8 +95,8 @@ function LoginPage({ setIsWalletConnected, isWalletConnected }) {
           </span>
         </h1>
         <Button
-          buttonText="Connect Wallet "
-          thumb="👍"
+          buttonText="Connect MetaMask"
+          thumb="👆"
           bg="#ffd44796"
           cursor="pointer"
           action={() => {
