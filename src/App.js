@@ -2,7 +2,7 @@
 import "./App.css";
 import { useState } from "react";
 import WishDashboard from "./pages/wishDashboard/WishDashboard.js";
-import LoginPage from "./pages/login/login.js";
+import LoginPage from "./pages/login/Login.js";
 
 function App() {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
