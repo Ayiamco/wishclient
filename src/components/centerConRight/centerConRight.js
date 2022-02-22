@@ -13,8 +13,7 @@ export default function CenterConRight({ _state, getWishContract }) {
         let wishPortalContract = await getWishContract(ethereum);
         let wishes = await wishPortalContract.getPublicWishes();
         const _privateWishes = await wishPortalContract.getPrivateWishes();
-        console.log("Public wish from blockchain:", wishes);
-        console.log("Private wish from blockchain:", _privateWishes);
+
         wishes = [...wishes, ..._privateWishes];
         let wishesArray = [];
         wishes.forEach((wish) => {
@@ -25,7 +24,7 @@ export default function CenterConRight({ _state, getWishContract }) {
             isPrivate: wish.isPrivate,
           });
         });
-        console.log("wishes gotten from blockchain: ", wishesArray);
+
         dispatch({
           type: "SET_ALL_WISHES",
           payload: { wishes: wishesArray.reverse() },

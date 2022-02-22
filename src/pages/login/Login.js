@@ -37,7 +37,7 @@ function LoginPage({ setIsWalletConnected, isWalletConnected }) {
       } else {
         setIsWalletConnected(false);
         console.log("No authorized account found");
-        alert("No authorized account found");
+        //alert("No authorized account found");
       }
     } catch (error) {
       console.log(error);
