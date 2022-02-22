@@ -1,10 +1,10 @@
 import "./wishDashboard.css";
 import NavBar from "../../components/navBar/navBar.js";
 import CenterConRight from "../../components/centerConRight/centerConRight";
-import { useReducer, useCallback, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import reducer from "../../reducers/wishDashboardReducer";
 import wishPortal from "../../utils/wishContract.json";
-import DP from "../../assets/profile.svg";
+//import DP from "../../assets/profile.svg";
 import { ethers } from "ethers";
 import WishForm from "../../components/wishForm/wishForm";
 
@@ -45,21 +45,21 @@ function WishDashboard({ setIsWalletConnected }) {
     return wishPortalContract;
   };
 
-  const responsiveness = useCallback(() => {
+  const responsiveness = () => {
     if (window.innerWidth < 979) {
       dispatch({ type: "CHANGE_LAYOUT", payload: true });
     } else if (window.innerWidth > 979) {
       dispatch({ type: "CHANGE_LAYOUT", payload: false });
     }
-  });
+  };
 
   //window.addEventListener("resize", responsiveness);
 
-  const fetchUserName = () => {
-    let newUsername = JSON.parse(localStorage.getItem("userName"));
-    if (!newUsername) setIsWalletConnected(false);
-    else dispatch({ type: "SET_USERNAME", payload: { ...newUsername } });
-  };
+  // const fetchUserName = useCallback(() => {
+  //   let newUsername = JSON.parse(localStorage.getItem("userName"));
+  //   if (!newUsername) setIsWalletConnected(false);
+  //   else dispatch({ type: "SET_USERNAME", payload: { ...newUsername } });
+  // });
 
   useEffect(() => {
     window.addEventListener("resize", responsiveness);
@@ -69,7 +69,10 @@ function WishDashboard({ setIsWalletConnected }) {
   });
 
   useEffect(() => {
-    fetchUserName();
+    //fetchUserName();
+    let newUsername = JSON.parse(localStorage.getItem("userName"));
+    if (!newUsername) setIsWalletConnected(false);
+    else dispatch({ type: "SET_USERNAME", payload: { ...newUsername } });
   }, []);
 
   return (

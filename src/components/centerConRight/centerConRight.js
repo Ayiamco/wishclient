@@ -42,7 +42,7 @@ export default function CenterConRight({ _state, getWishContract }) {
       console.log(error.message);
       console.log(error);
     }
-  }, []);
+  }, [getWishContract]);
 
   useEffect(() => {
     getAllWishes();
